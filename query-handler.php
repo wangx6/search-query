@@ -14,6 +14,8 @@
 		)
 	);
 	$query = $_POST['name'];
+
+	array_push($map, array('name' => 'property 4', 'id' => $query));
 	echo json_encode($map);
 	// class QueryHandler {
 	// 	var $key = 'bff0ff3bd8a20b2dbfddcc31a70a09f433a8782b';
