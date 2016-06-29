@@ -46,7 +46,7 @@ var Observable = (function (Observable) {
 	return Observable;
 })(Observable || {});
 
-var SearchInput = (function() {
+var SearchInput = (function($) {
 	var SearchInput = function() {
 		this.parent = $('.daft__search-result').eq(0);
 		this.ele = $('<form>').addClass('daft__search-input');
@@ -86,7 +86,7 @@ var SearchInput = (function() {
 	};
 
 	return SearchInput;
-})();
+})(jQuery);
 
 var Modal = (function($) {
 	var Modal = function() {
@@ -139,18 +139,32 @@ var SearchResult = (function($) {
 
 	SearchResult.prototype.setData = function(data) {
 		this.data = data;
-		this.updateData();
+		this.updateData(data);
 	};
 
-	SearchResult.prototype.updateData = function(newData) {
+	SearchResult.prototype.initView = function() {
 		var li, i = 0, ln = this.data.getSize() || 0;
 		var frag = $(document.createDocumentFragment());
 		for(; i < ln; i++) {
 			li = new SearchResultItem();
 			li.setData(this.data.getAt(i));
+			this.listItem.push(li);
 			frag.append(li.ele);
 		};
 		this.ele.append(frag);
+		this.isInited = true;
+		console.log('asdf');
+	};
+
+	SearchResult.prototype.updateData = function(newData) {
+		if(!this.isInited) this.initView();
+		else {
+			var i = 0, ln = this.data.getSize() || 0;
+			for(; i < ln; i++) {
+				console.log(this.listItem[i]);
+				//this.listItem[i].setData(this.data.getAt(i));
+			};
+		}
 	};
 
 	return SearchResult;
@@ -159,7 +173,7 @@ var SearchResult = (function($) {
 /**
  * VIEW LIST ITEM
  */
-var SearchResultItem = (function() {
+var SearchResultItem = (function($) {
 	var SearchResultItem = function() {
 		this.ele = $('<div>').addClass('daft__search-result__item');
 		this.nameEle = $('<div>');
@@ -184,7 +198,7 @@ var SearchResultItem = (function() {
 		this.idEle.html(newData.get('id'));
 	};
 	return SearchResultItem;
-})();
+})(jQuery);
 
 /**
  * DATA
@@ -272,7 +286,7 @@ var SearchHandler = (function($) {
 
 	SearchHandler.prototype.genKeyWords = function(str) {
 		var query = {
-			name: 'foobar hello'
+			name: str
 		};
 		if(!str.trim()) return;
 		var arr  = str.split(' ');
